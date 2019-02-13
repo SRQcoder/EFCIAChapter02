@@ -9,8 +9,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DataLayer.EfCLasses;
+using DataLayer.EfCode;
+using Microsoft.EntityFrameworkCore;
 
-namespace EFCIAChaper02
+namespace EFCIAChapter02
 {
     public class Startup
     {
@@ -24,6 +27,8 @@ namespace EFCIAChaper02
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var connection = Configuration.GetConnectionString("DefaultConnection");
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -33,6 +38,9 @@ namespace EFCIAChaper02
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddDbContext<EFCoreContext>(options => options.UseSqlServer(connection,
+    b => b.MigrationsAssembly("DataLayer")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

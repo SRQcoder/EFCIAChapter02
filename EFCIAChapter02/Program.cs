@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace EFCIAChaper02
+namespace EFCIAChapter02
 {
     public class Program
     {

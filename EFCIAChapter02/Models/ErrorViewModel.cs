@@ -1,6 +1,6 @@
 using System;
 
-namespace EFCIAChaper02.Models
+namespace EFCIAChapter02.Models
 {
     public class ErrorViewModel
     {

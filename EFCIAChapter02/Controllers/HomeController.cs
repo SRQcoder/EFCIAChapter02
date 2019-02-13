@@ -4,14 +4,23 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using EFCIAChaper02.Models;
+using EFCIAChapter02.Models;
+using DataLayer.EfCode;
 
-namespace EFCIAChaper02.Controllers
+namespace EFCIAChapter02.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly EFCoreContext Context;
+
+        public HomeController(EFCoreContext context)
+        {
+            Context = context;
+        }
+
         public IActionResult Index()
         {
+
             return View();
         }
 
