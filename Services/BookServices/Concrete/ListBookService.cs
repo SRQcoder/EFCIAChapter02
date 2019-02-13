@@ -20,7 +20,7 @@ namespace Services.BookServices
         {
             var booksQuery = Context.Books.AsNoTracking();
 
-            return booksQuery;
+            return null; //booksQuery;
         }
     }
 }
