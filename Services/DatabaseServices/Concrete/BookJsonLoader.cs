@@ -50,7 +50,23 @@ namespace Services.DatabaseServices.Concrete
                 Title = bookInfoJson.title,
                 Description = bookInfoJson.description,
                 PublishedOn = DecodePublishDate(bookInfoJson.publishedDate),
+                Publisher = bookInfoJson.publisher,
+                Price = (decimal)(bookInfoJson.saleInfoListPriceAmount ?? -1),
+                ImageUrl = bookInfoJson.imageLinksThumbnail
+            };
+            byte i = 0;
+            book.AuthorsLink = new List<BookAuthor>();
+            foreach (var author in bookInfoJson.authors)
+            {
+                book.AuthorsLink.Add(new BookAuthor { Book = book, Author = authorDictionary[author], Order = i++ });
             }
+
+            if (bookInfoJson.averageRating != null)
+            {
+                book.Reviews = CalculateReviewsToMatch((double)bookInfoJson.averageRating, (int)bookInfoJson.ratingsCount);
+            }
+
+            return book;
         }
 
         private static DateTime DecodePublishDate(string publishDate)
@@ -62,6 +78,22 @@ namespace Services.DatabaseServices.Concrete
                 default:
                     break;
             }
+        }
+
+        private static ICollection<Review> CalculateReviewsToMatch(double averageRating, int ratingsCount)
+        {
+            var reviews = new List<Review>();
+            var currentAverage = averageRating;
+            for (int i = 0; i < ratingsCount; i++)
+            {
+                reviews.Add(new Review
+                {
+                    VoterName = "anonymous",
+                    NumStars = (int)(currentAverage > averageRating ? Math.Truncate(averageRating) : Math.Ceiling(averageRating))
+                });
+                currentAverage = reviews.Average(x => x.NumStars);
+            }
+            return reviews;
         }
     }
 }
