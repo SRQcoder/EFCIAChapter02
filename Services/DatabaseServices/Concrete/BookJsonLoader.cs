@@ -69,15 +69,16 @@ namespace Services.DatabaseServices.Concrete
             return book;
         }
 
-        private static DateTime DecodePublishDate(string publishDate)
+        private static DateTime DecodePublishDate(string publishedDate)
         {
-            var split = publishDate.Split('-');
+            var split = publishedDate.Split('-');
             switch (split.Length)
             {
                 case 1: return new DateTime(int.Parse(split[0]), 1, 1);
-                default:
-                    break;
+                case 2: return new DateTime(int.Parse(split[0]), int.Parse(split[1]), 1);
+                case 3: return new DateTime(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]));
             }
+            throw new InvalidOperationException($"The json publishedDate failed to decode: string was {publishedDate}");
         }
 
         private static ICollection<Review> CalculateReviewsToMatch(double averageRating, int ratingsCount)

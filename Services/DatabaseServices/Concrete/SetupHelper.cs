@@ -16,16 +16,24 @@ namespace Services.DatabaseServices.Concrete
         private const string SeedDataSearchName = "apressBooks.json";
         public const string SeedFileSubDirectory = "seedData";
 
-        public static void SeedDatabase(this EFCoreContext context, string dataDictionary)
+        public static int SeedDatabase(this EFCoreContext context, string dataDictionary)
         {
             if (!(context.GetService<IDatabaseCreator>() as RelationalDatabaseCreator).Exists())
             {
-                var numbooks = context.Books.Count();
-                if (numbooks == 0)
-                {
-                    var books = BookJsonLoader.LoadBooks(Path.Combine(dataDictionary, SeedFileSubDirectory), SeedDataSearchName).ToList();
-                }
+                throw new InvalidOperationException("The database does not exist. If you are using Migrations then run PMC command update-database to create it");
             }
+            var numBooks = context.Books.Count();
+            if (numBooks == 0)
+            {
+                var books = BookJsonLoader.LoadBooks(Path.Combine(dataDictionary, SeedFileSubDirectory), SeedDataSearchName).ToList();
+                context.Books.AddRange(books);
+                context.SaveChanges();
+
+            }
+            return numBooks;
+
+
+
         }
     }
 }
